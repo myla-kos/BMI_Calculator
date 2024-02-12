@@ -1,0 +1,88 @@
+import tkinter as tk
+from tkinter import ttk
+from tkinter import messagebox
+import matplotlib.pyplot as plt
+import numpy as np
+
+new_dictionary = {"Underweight": 0,
+                  "Normal": 0,
+                  "Overweight": 0,
+                  "Obese": 0
+                  }
+#Function for BMI calculation
+def calculate_BMI():
+    personweight = weighttxt.get()
+    personheight = heighttxt.get()
+    if personweight == "" or personheight =="":
+        tk.messagebox.showwarning(title="Error", message="Value cannot be blank")
+    else:
+        personweight = int(personweight)
+        personheight = int(personheight) / 100
+        bmi = personweight / (personheight * personheight)
+        return bmi
+
+#adding the values into dictionary
+def text_BMI():
+    result = calculate_BMI()
+    if result <= 18.4:
+        newresultlabel.config(text="You are underweight")
+        new_dictionary["Underweight"]+=1
+
+    elif result <= 24.9:
+        newresultlabel.config(text="You are normal weight")
+        new_dictionary["Normal"] += 1
+    elif result <= 39.9:
+        newresultlabel.config(text="You are overweight")
+        new_dictionary["Overweight"] += 1
+    else:
+        newresultlabel.config(text="You are obese")
+        new_dictionary["Obese"] += 1
+
+    newresultlabel.grid(row=5, column=0)
+
+window = tk.Tk()
+window.title("BMI Calculator")
+window.config(highlightcolor="pink", highlightthickness=15)
+frame = tk.Frame(window)
+frame.config(borderwidth=30)
+frame.pack()
+
+#Creating main frame
+calculatorframe = tk.LabelFrame(frame, text="~ Welcome to the BMI calculator ~", font=("Lato", 18, "bold"), background="pink", fg="black")
+calculatorframe.grid(row=0, column=0, padx=10, pady=30, sticky="news")
+
+weightlabel = tk.Label(calculatorframe, text="Enter weight(kg): ", font=("Lato", 12), highlightthickness=2, highlightbackground="black")
+weightlabel.grid(row=0, column=0, pady=40, padx=40)
+weighttxt = tk.Entry(calculatorframe, borderwidth=3)
+weighttxt.grid(row=0, column=1)
+
+
+heightlabel = tk.Label(calculatorframe, text="Enter height(cm): ", font=("Lato", 12), highlightthickness=2, highlightbackground="black")
+heightlabel.grid(row=1, column=0)
+heighttxt = tk.Entry(calculatorframe, borderwidth=3)
+heighttxt.grid(row=1, column=1, padx=10, pady=10)
+
+#Creating a button to get result
+calculatebutton = tk.Button(frame, text="Calculate", command=text_BMI, font=("Lato", 12), bg="grey")
+calculatebutton.grid(row=2, column=0, padx=20, pady=20, sticky="news")
+newresultlabel = tk.Label(frame, font=("Lato", 16), background="pink")
+
+#creating pie chart
+def get_pie():
+    y = new_dictionary.values()
+    mylabels = new_dictionary.keys()
+    mycolors = ["Chocolate", "CornflowerBlue", "DarkOliveGreen", "Gold"]
+    myexplode = [0.2, 0, 0, 0]
+
+    plt.pie(y, labels = mylabels, colors = mycolors, explode = myexplode, shadow = True)
+    plt.legend()
+    plt.show()
+
+
+
+image = tk.PhotoImage(file="statistics2.png")
+statisticsbutton = tk.Button(frame, text="Statistics", image=image, command=get_pie, compound="left", font=("Lato", 12))
+statisticsbutton.grid(row=7, column=0, padx=10, pady=10, sticky="w")
+
+
+window.mainloop()
